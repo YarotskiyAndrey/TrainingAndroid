@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Тренировка</string>
+    <string name="change">Сменить</string>
+    <string name="morning">Утро</string>
+    <string name="night">Ночь</string>
+    <string name="imageContentDescription">изображение времени дня</string>
+</resources>

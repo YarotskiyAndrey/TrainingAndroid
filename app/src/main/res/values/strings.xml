@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Training</string>
+    <string name="change">Change</string>
+    <string name="morning">Morning</string>
+    <string name="night">Night</string>
+    <string name="imageContentDescription">daytime image</string>
+</resources>
