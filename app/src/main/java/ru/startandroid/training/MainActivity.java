@@ -6,19 +6,27 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    ImageView dayTimeImage;
-    Button changeButton;
-    TextView dayTimeText;
+    private ImageView dayTimeImage;
+    private Button changeButton;
+    private TextView dayTimeText;
+
+    private ImageView lightsourceImage;
+    private Animation lightsourceAnimation;
 
     public static final String APP_PREFERENCES = "mysettings";
-    public static final String APP_PREFERENCES_DAYTIME = "Daytime"; // имя кота
+    public static final String APP_PREFERENCES_DAYTIME = "Daytime";
 
     SharedPreferences mSettings;
+
+    public static final long LIGHTSOURCE_ANIMATION = 10;// period of animation
+    private long mStartTime;
 
 
     private static final String TAG = "myLogs";
@@ -38,11 +46,10 @@ public class MainActivity extends AppCompatActivity {
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         if (mSettings.contains(APP_PREFERENCES_DAYTIME)) {
-            if (mSettings.getString(APP_PREFERENCES_DAYTIME, "").equals(getString(R.string.night))){
+            if (mSettings.getString(APP_PREFERENCES_DAYTIME, "").equals(getString(R.string.night))){//Setting last daytime
                     setDayTime(R.string.night);
             }
         }
-
 
         View.OnClickListener onClickButtonListener = new View.OnClickListener() {
             @Override
@@ -50,10 +57,40 @@ public class MainActivity extends AppCompatActivity {
                 changeDayTime();
             }
         };
-
         changeButton.setOnClickListener(onClickButtonListener);
 
+        mStartTime = getTime();
+
+        lightsourceImage = findViewById(R.id.imageView);
+
+        lightsourceAnimation = AnimationUtils.loadAnimation(this, R.anim.lightsourceanimation);
+        lightsourceAnimation.setDuration(1000);
+
+        lightsourceAnimation.setAnimationListener(animationListener);
+        lightsourceImage.startAnimation(lightsourceAnimation);
+
     }
+
+    private long getTime() { //returns current time in milliseconds
+        return System.nanoTime() / 1_000_000;
+    }
+
+    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            lightsourceImage.startAnimation(lightsourceAnimation);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    };
 
     private void changeDayTime() {
         String morningText = getString(R.string.morning);
