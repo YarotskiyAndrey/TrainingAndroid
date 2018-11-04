@@ -1,38 +1,25 @@
 package ru.startandroid.training;
 
 import android.content.Context;
-import android.os.Environment;
-import android.os.PersistableBundle;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
     ImageView dayTimeImage;
     Button changeButton;
     TextView dayTimeText;
 
-    String dayStateFileName = "dayStateFile.txt";
+    public static final String APP_PREFERENCES = "mysettings";
+    public static final String APP_PREFERENCES_DAYTIME = "Daytime"; // имя кота
 
-    String dayTimeString = "null";
+    SharedPreferences mSettings;
+
 
     private static final String TAG = "myLogs";
     private static final String TAG_ONSAVE = "onSaveLogs";
@@ -48,29 +35,19 @@ public class MainActivity extends AppCompatActivity {
         changeButton = (Button) findViewById(R.id.changeButton);
         dayTimeText = (TextView) findViewById(R.id.dayTimeText);
 
-        if (savedInstanceState != null) {
-            Log.d(TAG_ONSAVE, savedInstanceState.getString("dayTime"));
-        } else {
-            Log.d(TAG_ONSAVE, "Failed");
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        if (mSettings.contains(APP_PREFERENCES_DAYTIME)) {
+            if (mSettings.getString(APP_PREFERENCES_DAYTIME, "").equals(getString(R.string.night))){
+                    setDayTime(R.string.night);
+            }
         }
 
 
         View.OnClickListener onClickButtonListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String morningText = getString(R.string.morning);
-                String currentDayTimeText = dayTimeText.getText().toString();
-                if (currentDayTimeText.equals(morningText)) {
-                    Log.d(TAG, "Changing morning to night");
-
-                    dayTimeImage.setImageResource(R.drawable.night);
-                    dayTimeText.setText(R.string.night);
-                } else {
-                    Log.d(TAG, "Changing night to morning");
-
-                    dayTimeImage.setImageResource(R.drawable.morning);
-                    dayTimeText.setText(R.string.morning);
-                }
+                changeDayTime();
             }
         };
 
@@ -78,15 +55,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void changeDayTime() {
+        String morningText = getString(R.string.morning);
+        String currentDayTimeText = dayTimeText.getText().toString();
+        if (currentDayTimeText.equals(morningText)) {
+            Log.d(TAG, "Changing morning to night");
+            setDayTime(R.string.night);
+        } else {
+            Log.d(TAG, "Changing night to morning");
+            setDayTime(R.string.morning);
+        }
+    }
 
+    private void setDayTime(int dayTimeTextInt) {
+        String morningText = getString(R.string.morning);
+        String newDayTimeText = getString(dayTimeTextInt);
 
+        int dayTimeImageInt = newDayTimeText.equals(morningText) ? R.drawable.morning : R.drawable.night;
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putString("dayTime", dayTimeText.getText().toString());
-        Log.d(TAG_ONSAVE, "onSaveInstanceState");
+        dayTimeImage.setImageResource(dayTimeImageInt);
+        dayTimeText.setText(dayTimeTextInt);
     }
 
 
@@ -112,17 +100,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG_ONSAVE, "onStop");
+
+        String dayTime = dayTimeText.getText().toString();
+
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCES_DAYTIME, dayTime);
+        editor.apply();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG_ONSAVE, "onDestroy");
-
-
-
-
-
     }
 
     @Override
