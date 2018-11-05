@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Path path = new Path();
             ObjectAnimator animatorX = ObjectAnimator.ofFloat(dayTimeImage, View.X, 2000f);
             ObjectAnimator animatorY = ObjectAnimator.ofFloat(dayTimeImage, View.Y, 700f);
@@ -119,6 +119,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Create animator without using curved path
             Log.d(TAG, "PathAnim failed");
+        }*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Path path = new Path();
+            path.arcTo(0f, 0f, 1000f, 1000f, 270f, -180f, true);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(lightsourceImage, View.X, View.Y, path);
+            animator.setDuration(5000);
+            animator.start();
+            Log.d(TAG,"path succeed");
+        }else{
+            Log.d(TAG,"path failed");
         }
 
 
