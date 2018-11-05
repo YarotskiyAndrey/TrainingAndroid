@@ -1,13 +1,22 @@
 package ru.startandroid.training;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Path;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.PathInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView dayTimeText;
 
     private ImageView lightsourceImage;
-    private Animation lightsourceAnimation;
+    private ObjectAnimator lightsourceAnimation;
 
     public static final String APP_PREFERENCES = "mysettings";
     public static final String APP_PREFERENCES_DAYTIME = "Daytime";
@@ -42,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
         dayTimeImage = (ImageView) findViewById(R.id.dayTimeImage);
         changeButton = (Button) findViewById(R.id.changeButton);
         dayTimeText = (TextView) findViewById(R.id.dayTimeText);
+        lightsourceImage = (ImageView) findViewById(R.id.lightsourceImage);
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         if (mSettings.contains(APP_PREFERENCES_DAYTIME)) {
-            if (mSettings.getString(APP_PREFERENCES_DAYTIME, "").equals(getString(R.string.night))){//Setting last daytime
-                    setDayTime(R.string.night);
+            if (mSettings.getString(APP_PREFERENCES_DAYTIME, "").equals(getString(R.string.night))) {//Setting last daytime
+                setDayTime(R.string.night);
             }
         }
 
@@ -59,38 +69,64 @@ public class MainActivity extends AppCompatActivity {
         };
         changeButton.setOnClickListener(onClickButtonListener);
 
-        mStartTime = getTime();
+//        mStartTime = getTime();
+//
+//        lightsourceImage = findViewById(R.id.imageView);
+//
+//        Path path = new Path();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            path.arcTo(0f, 0f, 1000f, 1000f, 270f, -180f, true);
+//            PathInterpolator pathInterpolator = new PathInterpolator(path);
+//
+//            //lightsourceAnimation = ObjectAnimator.ofFloat(lightsourceImage, "translationX", 1000f);
+//            lightsourceAnimation.setInterpolator(pathInterpolator);
+//
+//            //lightsourceAnimation = ObjectAnimator.ofFloat(lightsourceImage, View.X, View.Y, path);
+//            //lightsourceAnimation = ObjectAnimator.ofFloat(lightsourceImage, "translationX", 1000f);
+//            //lightsourceAnimation.setDuration(5000);
+//            lightsourceAnimation.start();
+//            Log.d(TAG,"path succeed");
+//        }else{
+//            Log.d(TAG,"path failed");
+//        }
 
-        lightsourceImage = findViewById(R.id.imageView);
 
-        lightsourceAnimation = AnimationUtils.loadAnimation(this, R.anim.lightsourceanimation);
-        lightsourceAnimation.setDuration(1000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Path path = new Path();
+            ObjectAnimator animatorX = ObjectAnimator.ofFloat(dayTimeImage, View.X, 2000f);
+            ObjectAnimator animatorY = ObjectAnimator.ofFloat(dayTimeImage, View.Y, 700f);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(animatorX,animatorY);
+            animatorSet.setDuration(5000);
+            animatorSet.start();
 
-        lightsourceAnimation.setAnimationListener(animationListener);
-        lightsourceImage.startAnimation(lightsourceAnimation);
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    super.onAnimationRepeat(animation);
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                }
+            });
+        } else {
+            // Create animator without using curved path
+            Log.d(TAG, "PathAnim failed");
+        }
+
 
     }
 
     private long getTime() { //returns current time in milliseconds
         return System.nanoTime() / 1_000_000;
     }
-
-    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            lightsourceImage.startAnimation(lightsourceAnimation);
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-
-        }
-    };
 
     private void changeDayTime() {
         String morningText = getString(R.string.morning);
