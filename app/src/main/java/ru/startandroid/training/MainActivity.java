@@ -1,25 +1,22 @@
 package ru.startandroid.training;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Path;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.PathInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import Interpolators.CustomAccelerateDecelerateInterpolator;
+import Interpolators.UpDownInterpolator;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView dayTimeImage;
@@ -27,20 +24,24 @@ public class MainActivity extends AppCompatActivity {
     private TextView dayTimeText;
 
     private ImageView lightsourceImage;
-    private ObjectAnimator lightsourceAnimation;
+    private AnimatorSet lightsourceAnimation;
+
+    private static final float LIGHTSOURCE_X_START = 0f;
+    private static final float LIGHTSOURCE_X_END = 2250f;
+    private static final float LIGHTSOURCE_Y_START = 0f;
+    private static final float LIGHTSOURCE_Y_END = -900f;
+    public static final long LIGHTSOURCE_ANIMATION_DURATION = 2000;
+    private static boolean isSun = true;
 
     public static final String APP_PREFERENCES = "mysettings";
     public static final String APP_PREFERENCES_DAYTIME = "Daytime";
-
     SharedPreferences mSettings;
-
-    public static final long LIGHTSOURCE_ANIMATION = 10;// period of animation
-    private long mStartTime;
 
 
     private static final String TAG = "myLogs";
     private static final String TAG_ONSAVE = "onSaveLogs";
     private static final String TAG_FILE = "FileLog";
+    private static final String TAG_ANIM = "AnimLog";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,81 +63,90 @@ public class MainActivity extends AppCompatActivity {
         }
 
         View.OnClickListener onClickButtonListener = new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 changeDayTime();
+                changeLightSource();
             }
         };
         changeButton.setOnClickListener(onClickButtonListener);
 
-//        mStartTime = getTime();
-//
-//        lightsourceImage = findViewById(R.id.imageView);
-//
-//        Path path = new Path();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            path.arcTo(0f, 0f, 1000f, 1000f, 270f, -180f, true);
-//            PathInterpolator pathInterpolator = new PathInterpolator(path);
-//
-//            //lightsourceAnimation = ObjectAnimator.ofFloat(lightsourceImage, "translationX", 1000f);
-//            lightsourceAnimation.setInterpolator(pathInterpolator);
-//
-//            //lightsourceAnimation = ObjectAnimator.ofFloat(lightsourceImage, View.X, View.Y, path);
-//            //lightsourceAnimation = ObjectAnimator.ofFloat(lightsourceImage, "translationX", 1000f);
-//            //lightsourceAnimation.setDuration(5000);
-//            lightsourceAnimation.start();
-//            Log.d(TAG,"path succeed");
-//        }else{
-//            Log.d(TAG,"path failed");
-//        }
+
+        ValueAnimator animationX = ValueAnimator.ofFloat(LIGHTSOURCE_X_START, LIGHTSOURCE_X_END);
+        animationX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                float animatedValue = (float) updatedAnimation.getAnimatedValue();
+                lightsourceImage.setTranslationX(animatedValue);
+            }
+        });
+        animationX.addListener(new ValueAnimator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isSun = true;
+                lightsourceImage.setImageResource(R.drawable.sun);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                changeLightSource();
+                Log.d(TAG_ANIM, "animationSet_end");
+            }
 
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Path path = new Path();
-            ObjectAnimator animatorX = ObjectAnimator.ofFloat(dayTimeImage, View.X, 2000f);
-            ObjectAnimator animatorY = ObjectAnimator.ofFloat(dayTimeImage, View.Y, 700f);
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.playTogether(animatorX,animatorY);
-            animatorSet.setDuration(5000);
-            animatorSet.start();
+        });
+        animationX.setInterpolator(new CustomAccelerateDecelerateInterpolator());
+        //animationX.setInterpolator(new AccelerateDecelerateInterpolator());
+        animationX.setRepeatCount(ValueAnimator.INFINITE);
+        animationX.setRepeatMode(ValueAnimator.RESTART);
 
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                }
+        ValueAnimator animationY = ValueAnimator.ofFloat(LIGHTSOURCE_Y_START, LIGHTSOURCE_Y_END);
+        animationY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator updatedAnimation) {
+                float animatedValue = (float) updatedAnimation.getAnimatedValue();
+                lightsourceImage.setTranslationY(animatedValue);
+            }
+        });
+        animationY.setInterpolator(new UpDownInterpolator());
+        animationY.setRepeatCount(ValueAnimator.INFINITE);
+        animationY.setRepeatMode(ValueAnimator.RESTART);
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                    super.onAnimationRepeat(animation);
-                }
+        lightsourceAnimation = new AnimatorSet();
 
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                }
-            });
-        } else {
-            // Create animator without using curved path
-            Log.d(TAG, "PathAnim failed");
-        }*/
+        lightsourceAnimation.playTogether(animationX, animationY);
+        lightsourceAnimation.setDuration(LIGHTSOURCE_ANIMATION_DURATION);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Path path = new Path();
-            path.arcTo(0f, 0f, 1000f, 1000f, 270f, -180f, true);
-            ObjectAnimator animator = ObjectAnimator.ofFloat(lightsourceImage, View.X, View.Y, path);
-            animator.setDuration(5000);
-            animator.start();
-            Log.d(TAG,"path succeed");
-        }else{
-            Log.d(TAG,"path failed");
-        }
-
+        lightsourceAnimation.start();
 
     }
-
-    private long getTime() { //returns current time in milliseconds
-        return System.nanoTime() / 1_000_000;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void changeLightSource() {
+        Log.d(TAG_ANIM, "Change light");
+        if (isSun) {
+            lightsourceImage.setImageResource(R.drawable.moon);
+            lightsourceAnimation.reverse();
+            setDayTime(R.string.night);
+            isSun = false;
+            Log.d(TAG_ANIM, "sun to moon");
+        } else {
+            lightsourceImage.setImageResource(R.drawable.sun);
+            lightsourceAnimation.reverse();
+            setDayTime(R.string.morning);
+            isSun = true;
+            Log.d(TAG_ANIM, "moon to sun");
+        }
     }
 
     private void changeDayTime() {
