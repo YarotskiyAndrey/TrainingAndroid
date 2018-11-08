@@ -48,26 +48,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dayTimeImage = (ImageView) findViewById(R.id.dayTimeImage);
-        changeButton = (Button) findViewById(R.id.changeButton);
-        dayTimeText = (TextView) findViewById(R.id.dayTimeText);
         lightsourceImage = (ImageView) findViewById(R.id.lightsourceImage);
 
-        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-
-        if (mSettings.contains(APP_PREFERENCES_DAYTIME)) {
-            if (mSettings.getString(APP_PREFERENCES_DAYTIME, "").equals(getString(R.string.night))) {//Setting last daytime
-                setDayTime(R.string.night);
-            }
-        }
-
-        View.OnClickListener onClickButtonListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeDayTime();
-            }
-        };
-        changeButton.setOnClickListener(onClickButtonListener);
+//        dayTimeImage = (ImageView) findViewById(R.id.dayTimeImage);
+//        changeButton = (Button) findViewById(R.id.changeButton);
+//        dayTimeText = (TextView) findViewById(R.id.dayTimeText);
+//        lightsourceImage = (ImageView) findViewById(R.id.lightsourceImage);
+//
+//        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+//
+//        if (mSettings.contains(APP_PREFERENCES_DAYTIME)) {
+//            if (mSettings.getString(APP_PREFERENCES_DAYTIME, "").equals(getString(R.string.night))) {//Setting last daytime
+//                setDayTime(R.string.night);
+//            }
+//        }
+//
+//        View.OnClickListener onClickButtonListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                changeDayTime();
+//            }
+//        };
+//        changeButton.setOnClickListener(onClickButtonListener);
 
 //        mStartTime = getTime();
 //
@@ -123,9 +125,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Path path = new Path();
-            path.arcTo(0f, 0f, 1000f, 1000f, 270f, -180f, true);
+            //path.arcTo(250f, 250f, 300f, 300f, 180f, 360f, true);
+            path.arcTo(55f, 55f, 1000f, 1000f, 270f, -180f, true);
             ObjectAnimator animator = ObjectAnimator.ofFloat(lightsourceImage, View.X, View.Y, path);
-            animator.setDuration(5000);
+            animator.setDuration(1000);
             animator.start();
             Log.d(TAG,"path succeed");
         }else{
