@@ -2,15 +2,48 @@ package com.example.kittenapp.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kittenapp.R;
+import com.example.kittenapp.model.Kitten;
+import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenViewHolder> {
+
+    private List<Kitten> kittenList = new ArrayList<>();
+
+    public KittenAdapter(List<Kitten> kittenList) {
+        this.kittenList = kittenList;
+    }
+
+    @NonNull
+    @Override
+    public KittenViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.row_kitten, parent, false);
+        return new KittenViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull KittenViewHolder holder, int position) {
+        String imageUrl = kittenList.get(position).getImageUrl();
+        Picasso.get().load(imageUrl).into(holder.kittenImageView);
+
+        holder.nameTextView.setText(kittenList.get(position).getName());
+        holder.numberTextView.setText(String.valueOf(kittenList.get(position).getNumber()));
+    }
+
+    @Override
+    public int getItemCount() {
+        return kittenList.size();
+    }
 
     class KittenViewHolder extends RecyclerView.ViewHolder {
         private ImageView kittenImageView;
@@ -20,27 +53,10 @@ public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenView
 
         public KittenViewHolder(@NonNull View itemView) {
             super(itemView);
-            kittenImageView = itemView.findViewById(R.id.kitten_image_view);
-            numberTextView = itemView.findViewById(R.id.number_text_view);
-            nameTextView = itemView.findViewById(R.id.name_text_view);
+
+            kittenImageView = itemView.findViewById(R.id.kitten_image);
+            numberTextView = itemView.findViewById(R.id.kitten_number);
+            nameTextView = itemView.findViewById(R.id.kitten_name);
         }
-
-
     }
-
-//    @NonNull
-//    @Override
-//    public KittenAdapter.KittenViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull KittenAdapter.KittenViewHolder kittenViewHolder, int i) {
-//
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return 0;
-//    }
 }
