@@ -2,6 +2,7 @@ package com.example.kittenapp.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.kittenapp.R;
@@ -22,6 +23,12 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         TextView textView = findViewById(R.id.textView);
-        textView.setText(R.string.app_name);
+        String kittenName = "default";
+        Bundle extras = getIntent().getExtras();
+
+        if(extras!=null){
+            kittenName = extras.getString("name");
+        }
+        textView.setText(kittenName);
     }
 }

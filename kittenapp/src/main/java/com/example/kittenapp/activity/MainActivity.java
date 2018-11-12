@@ -8,12 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-
 
 import com.example.kittenapp.R;
 import com.example.kittenapp.adapter.KittenAdapter;
+import com.example.kittenapp.adapter.ItemClickListener;
 import com.example.kittenapp.decoration.SimpleDividerItemDecoration;
 import com.example.kittenapp.model.Kitten;
 import com.example.kittenapp.model.KittenJson;
@@ -27,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemClickListener {
 
     private static Context mContext;
 
@@ -52,22 +51,12 @@ public class MainActivity extends AppCompatActivity {
         callNewKittens();
 
         addKittensButton = findViewById(R.id.add_kittens_button);
-//        addKittensButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                callNewKittens();
-//            }
-//        });
         addKittensButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
-                intent.putExtra("key","911");
-                startActivity(intent);
+                callNewKittens();
             }
         });
-
-
     }
 
     private void callNewKittens() {
@@ -95,13 +84,10 @@ public class MainActivity extends AppCompatActivity {
             kittens.add(new Kitten(kittenJson));
         }
         if (adapter == null) {
-            Log.d("MyAdd", "Calling generate()");
             generateKittenList(kittens);
         } else {
-            Log.d("MyAdd", "Calling add()");
             adapter.addKittens(kittens);
-            recyclerView.scrollToPosition(adapter.getItemCount()-1);
-            Log.d("MyAdd", "Added");
+            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
         }
     }
 
@@ -113,6 +99,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-        Log.d("MyAdd", "Generated");
+        adapter.setClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        final Kitten kitten = adapter.getKitten(position);
+        Intent i = new Intent(this, ProfileActivity.class);
+        i.putExtra("imageUrl", kitten.getImageUrl());
+        i.putExtra("phone", kitten.getPhone());
+        i.putExtra("number", kitten.getNumber());
+        i.putExtra("name", kitten.getName());
+        startActivity(i);
     }
 }

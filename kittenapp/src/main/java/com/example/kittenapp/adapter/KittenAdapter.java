@@ -21,9 +21,12 @@ public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenView
 
     private List<Kitten> kittenList;
 
+    private ItemClickListener clickListener;
+
     public KittenAdapter(List<Kitten> kittenList) {
         this.kittenList = kittenList;
     }
+
 
     public void addKittens(List<Kitten> newKittens) {
         kittenList.addAll(newKittens);
@@ -35,6 +38,8 @@ public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenView
     public KittenViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.row_kitten, parent, false);
+
+
         return new KittenViewHolder(view);
     }
 
@@ -56,7 +61,15 @@ public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenView
         return kittenList.size();
     }
 
-    class KittenViewHolder extends RecyclerView.ViewHolder {
+    public void setClickListener(ItemClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public Kitten getKitten(int position) {
+        return kittenList.get(position);
+    }
+
+    class KittenViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView kittenImageView;
         private TextView numberTextView;
         private TextView nameTextView;
@@ -68,6 +81,15 @@ public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenView
             kittenImageView = itemView.findViewById(R.id.kitten_image);
             numberTextView = itemView.findViewById(R.id.kitten_number);
             nameTextView = itemView.findViewById(R.id.kitten_name);
+            itemView.setTag(itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (clickListener != null) {
+                clickListener.onClick(view, getAdapterPosition());
+            }
         }
     }
 }
