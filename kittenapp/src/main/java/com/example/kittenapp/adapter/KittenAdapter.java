@@ -2,6 +2,9 @@ package com.example.kittenapp.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.TypefaceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +15,19 @@ import com.example.kittenapp.R;
 import com.example.kittenapp.model.Kitten;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenViewHolder> {
 
-    private List<Kitten> kittenList = new ArrayList<>();
+    private List<Kitten> kittenList;
 
     public KittenAdapter(List<Kitten> kittenList) {
         this.kittenList = kittenList;
+    }
+
+    public void addKittens(List<Kitten> newKittens) {
+        kittenList.addAll(newKittens);
+        this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -36,7 +43,11 @@ public class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.KittenView
         String imageUrl = kittenList.get(position).getImageUrl();
         Picasso.get().load(imageUrl).into(holder.kittenImageView);
 
-        holder.nameTextView.setText(kittenList.get(position).getName());
+        String kittenName = kittenList.get(position).getName();
+        SpannableStringBuilder multiFontKittenName = new SpannableStringBuilder(kittenName);
+        multiFontKittenName.setSpan(new TypefaceSpan("roboto-regular"), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        holder.nameTextView.setText(multiFontKittenName);
+
         holder.numberTextView.setText(String.valueOf(kittenList.get(position).getNumber()));
     }
 

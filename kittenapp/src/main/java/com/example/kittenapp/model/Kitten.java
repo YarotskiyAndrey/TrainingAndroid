@@ -1,5 +1,11 @@
 package com.example.kittenapp.model;
 
+import android.content.Context;
+import android.content.res.Resources;
+
+import com.example.kittenapp.R;
+import com.example.kittenapp.activity.MainActivity;
+
 public class Kitten {
     private static final String[] names = {"Оливер", "Джаспер", "Смоки", "Гизмо", "Чарли", "Джек", "Макс", "Роки", "Оскар",
             "Перец", "Бейли", "Лаки", "Саймон", "Джордж", "Феликс", "Бандит", "Декстер", "Ромео", "Каспер", "Блэки",
@@ -14,8 +20,12 @@ public class Kitten {
     private String imageUrl;
 
     public Kitten(KittenJson kittenJson) {
-        this.name = generateName();
-        this.number = "Fluffy kitten №" + (kittenAmount + 1);
+        Context context = MainActivity.getContext();
+
+        this.name = context.getString(R.string.kitten_name_template) + " " + generateName();
+        this.number = context.getString(R.string.kitten_num_template) + (kittenAmount + 1);
+
+
         this.phone = generatePhone();
         this.imageUrl = kittenJson.getUrl();
         kittenAmount++;
@@ -24,7 +34,7 @@ public class Kitten {
     private String generateName() {
         int adjNumber = (int) (Math.random() * adjectives.length);
         int nameNumber = (int) (Math.random() * names.length);
-        String name = (int) (Math.random() * 2) % 2 == 0 ? "" : adjectives[adjNumber] + " ";
+        String name = (int) (Math.random() * 2) % 2 == 0 ? "" : adjectives[adjNumber] + " ";//1 of 2 kittens get 2 adjectives
         adjNumber = (int) (Math.random() * adjectives.length);
         return name + adjectives[adjNumber] + " " + names[nameNumber];
     }

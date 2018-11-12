@@ -1,10 +1,14 @@
 package com.example.kittenapp.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.kittenapp.R;
 import com.example.kittenapp.adapter.KittenAdapter;
@@ -22,25 +26,43 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static Context mContext;
+
     private RecyclerView recyclerView;
     private KittenAdapter adapter;
+    private KittenApi kittenApi;
+
+    private ImageButton addKittensButton;
+
+    public static Context getContext() {
+        return mContext;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
         setContentView(R.layout.activity_main);
 
-        KittenApi kittenApi = RetrofitInstance.getRetrofitInstance().create(KittenApi.class);
+        kittenApi = RetrofitInstance.getRetrofitInstance().create(KittenApi.class);
+        callNewKittens();
 
+        addKittensButton = findViewById(R.id.add_kittens_button);
+        addKittensButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callNewKittens();
+            }
+        });
+    }
+
+    private void callNewKittens() {
         Call<List<KittenJson>> call = kittenApi.getImageUrl("json", "jpg", 4);
-
 
         call.enqueue(new Callback<List<KittenJson>>() {
                          @Override
                          public void onResponse(Call<List<KittenJson>> call, Response<List<KittenJson>> response) {
-                             ArrayList<Kitten> kittenArrayList = createKittens(response.body());
-
-                             generateKittenList(kittenArrayList);
+                             createKittens(response.body());
                          }
 
                          @Override
@@ -49,34 +71,32 @@ public class MainActivity extends AppCompatActivity {
                          }
                      }
         );
-
-        Log.d("MyDebug","endCall ");
-
     }
 
-    private ArrayList<Kitten> createKittens(List<KittenJson> kittenJsonList) {
-        Log.d("MyDebug","createKittens");
-        ArrayList<Kitten> kittens = new ArrayList<>();
+    private void createKittens(List<KittenJson> kittenJsonList) {
+        List<Kitten> kittens = new ArrayList<>();
 
         for (KittenJson kittenJson : kittenJsonList
                 ) {
             kittens.add(new Kitten(kittenJson));
         }
-        return kittens;
+        if (adapter == null) {
+            Log.d("MyAdd", "Calling generate()");
+            generateKittenList(kittens);
+        } else {
+            Log.d("MyAdd", "Calling add()");
+            adapter.addKittens(kittens);
+            Log.d("MyAdd", "Added");
+        }
     }
 
-    private void generateKittenList(ArrayList<Kitten> kittenArrayList) {
-        Log.d("MyDebug","generateKittens START");
-        Log.d("MyDebug","find recycler view");
+    private void generateKittenList(List<Kitten> kittenArrayList) {
         recyclerView = findViewById(R.id.kitten_list_view);
-        Log.d("MyDebug","adapter");
         adapter = new KittenAdapter(kittenArrayList);
-        Log.d("MyDebug","layoutManager");
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
-        Log.d("MyDebug","setLayout");
         recyclerView.setLayoutManager(layoutManager);
-        Log.d("MyDebug","setAdapter");
         recyclerView.setAdapter(adapter);
-        Log.d("MyDebug","generateKittens FIN");
+        Log.d("MyAdd", "Generated");
     }
 }

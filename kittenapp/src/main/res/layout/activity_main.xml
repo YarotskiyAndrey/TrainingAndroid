@@ -12,4 +12,17 @@
         android:layout_height="wrap_content">
     </android.support.v7.widget.RecyclerView>
 
+    <ImageButton
+        android:id="@+id/add_kittens_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="@string/add_kittens_value_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/kitty_button"
+        android:background="@null"/>
+
 </android.support.constraint.ConstraintLayout>
