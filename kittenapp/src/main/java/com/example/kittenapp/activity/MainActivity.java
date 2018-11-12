@@ -1,6 +1,7 @@
 package com.example.kittenapp.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,8 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+
 import com.example.kittenapp.R;
 import com.example.kittenapp.adapter.KittenAdapter;
+import com.example.kittenapp.decoration.SimpleDividerItemDecoration;
 import com.example.kittenapp.model.Kitten;
 import com.example.kittenapp.model.KittenJson;
 import com.example.kittenapp.network.KittenApi;
@@ -41,19 +44,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
         setContentView(R.layout.activity_main);
+        mContext = this;
 
         kittenApi = RetrofitInstance.getRetrofitInstance().create(KittenApi.class);
+
         callNewKittens();
 
         addKittensButton = findViewById(R.id.add_kittens_button);
+//        addKittensButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                callNewKittens();
+//            }
+//        });
         addKittensButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callNewKittens();
+                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                intent.putExtra("key","911");
+                startActivity(intent);
             }
         });
+
+
     }
 
     private void callNewKittens() {
@@ -98,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         Log.d("MyAdd", "Generated");
     }
 }
