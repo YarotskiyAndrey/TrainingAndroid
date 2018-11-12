@@ -6,11 +6,76 @@
     android:layout_height="match_parent"
     tools:context=".activity.ProfileActivity">
 
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="217dp"
+        android:layout_height="217dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/profile_image_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+        app:srcCompat="@mipmap/ic_launcher" />
+
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/profilePhoneText"
         android:layout_width="wrap_content"
-        android:layout_height="14dp"
-        android:text="Hello"
-        tools:layout_editor_absoluteX="162dp"
-        tools:layout_editor_absoluteY="226dp" />
+        android:layout_height="wrap_content"
+        android:ems="10"
+        app:layout_constraintStart_toStartOf="@+id/profileImageView"
+        app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
+
+    <ImageButton
+        android:id="@+id/phoneImageButton"
+        android:layout_width="63dp"
+        android:layout_height="63dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@null"
+        android:contentDescription="@string/phone_button_image_description"
+        app:layout_constraintBottom_toTopOf="@+id/profilePhoneText"
+        app:layout_constraintEnd_toEndOf="@+id/profileImageView"
+        app:layout_constraintStart_toEndOf="@+id/profilePhoneText"
+        app:layout_constraintTop_toBottomOf="@+id/profileImageView"
+        app:srcCompat="@drawable/phone_button" />
+
+    <TextView
+        android:id="@+id/profileNumberTextView"
+        android:text="@string/kitten_num_template"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="71dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:fontFamily="@font/roboto_black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profilePhoneText" />
+
+    <TextView
+        android:id="@+id/profileNameTextView"
+        android:text="@string/kitten_name_template"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:fontFamily="@font/roboto_italic"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileNumberTextView" />
 </android.support.constraint.ConstraintLayout>

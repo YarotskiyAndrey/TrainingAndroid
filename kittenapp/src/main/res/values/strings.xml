@@ -3,4 +3,6 @@
     <string name="kitten_num_template">Fluffy Kitten №</string>
     <string name="kitten_name_template">Name:</string>
     <string name="add_kittens_value_description">to add 4 new kittens</string>
+    <string name="phone_button_image_description">Phone button image</string>
+    <string name="profile_image_description">Profile image</string>
 </resources>
