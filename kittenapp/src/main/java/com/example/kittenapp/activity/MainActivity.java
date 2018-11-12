@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("MyAdd", "Calling add()");
             adapter.addKittens(kittens);
+            recyclerView.scrollToPosition(adapter.getItemCount()-1);
             Log.d("MyAdd", "Added");
         }
     }
