@@ -1,6 +1,8 @@
 package com.example.kittenapp.activity;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -11,8 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,9 +23,6 @@ import android.widget.TextView;
 import com.example.kittenapp.R;
 import com.example.kittenapp.model.Kitten;
 import com.squareup.picasso.Picasso;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -99,14 +98,37 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", getPackageName(), null);
-                        intent.setData(uri);
-                        startActivityForResult(intent, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+                        askPermission();
                     }
                 }
             }
         }
+    }
+
+    private void askPermission() {
+        Context context = ProfileActivity.this;
+        String title = "Please, grant call permission";
+        String message = "Grant permission";
+        String button1String = "OK";
+        String button2String = "Cancel";
+
+        AlertDialog.Builder ad = new AlertDialog.Builder(context);
+        ad.setTitle(title);
+        ad.setMessage(message);
+        ad.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivityForResult(intent, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+            }
+        });
+        ad.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
     }
 
     private void callPhone() {
