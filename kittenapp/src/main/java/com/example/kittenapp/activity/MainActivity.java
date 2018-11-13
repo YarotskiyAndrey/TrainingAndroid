@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         i.putExtra("phone", kitten.getPhone());
         i.putExtra("number", kitten.getNumber());
         i.putExtra("name", kitten.getName());
+        i.putExtra("kitten", kitten);
         startActivity(i);
     }
 }

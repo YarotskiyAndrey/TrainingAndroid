@@ -1,12 +1,15 @@
 package com.example.kittenapp.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 
 import com.example.kittenapp.R;
 import com.example.kittenapp.activity.MainActivity;
 
-public class Kitten {
+import java.io.Serializable;
+
+public class Kitten implements Serializable {
     private static final String[] names = {"Оливер", "Джаспер", "Смоки", "Гизмо", "Чарли", "Джек", "Макс", "Роки", "Оскар",
             "Перец", "Бейли", "Лаки", "Саймон", "Джордж", "Феликс", "Бандит", "Декстер", "Ромео", "Каспер", "Блэки",
             "Честер", "Фрэнки", "Мерфи", "Бэтман", "Клео"};
@@ -41,7 +44,8 @@ public class Kitten {
 
     private String generatePhone() {
         int num = (int) (1000000 + Math.random() * 9999999);
-        return "097" + num;
+        String number = Integer.toString(num);
+        return "097" + number;
     }
 
     public String getName() {

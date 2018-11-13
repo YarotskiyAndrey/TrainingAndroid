@@ -3,21 +3,16 @@ package com.example.kittenapp.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kittenapp.R;
+import com.example.kittenapp.model.Kitten;
 import com.squareup.picasso.Picasso;
-
-import java.util.concurrent.TimeUnit;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -26,6 +21,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView phoneText;
     private TextView numberText;
     private TextView nameText;
+
+    private Kitten kittenUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +39,31 @@ public class ProfileActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
+            kittenUser = (Kitten) extras.getSerializable("kitten");
+
             String imageUrl = extras.getString("imageUrl");
             Picasso.get().load(imageUrl).into(profileImage);
-            phoneText.setText(extras.getString("phone"));
-            numberText.setText(extras.getString("number"));
+            phoneText.setText(kittenUser.getPhone());
+            numberText.setText(kittenUser.getNumber());
             nameText.setText(extras.getString("name"));
         }
 
         phoneButtonImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-                Log.d("MyLogs","Start call");
-                phoneIntent.setData(Uri.parse("tel:0970460922"));
-                startActivity(phoneIntent);
-                Log.d("MyLogs","End call");
+                dialPhone();
             }
         });
+    }
+
+    private void dialPhone(){
+//        Uri uri = Uri.parse(kittenUser.getPhone());
+//        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, uri);
+//        startActivity(phoneIntent);
+        Uri uri = Uri.parse("tel:"+kittenUser.getPhone());
+        Log.d("MyLogs", uri.toString());
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, uri);
+        startActivity(phoneIntent);
     }
 
     @Override
