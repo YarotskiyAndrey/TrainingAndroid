@@ -106,10 +106,6 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
     public void onClick(View view, int position) {
         final Kitten kitten = adapter.getKitten(position);
         Intent i = new Intent(this, ProfileActivity.class);
-        i.putExtra("imageUrl", kitten.getImageUrl());
-        i.putExtra("phone", kitten.getPhone());
-        i.putExtra("number", kitten.getNumber());
-        i.putExtra("name", kitten.getName());
         i.putExtra("kitten", kitten);
         startActivity(i);
     }
