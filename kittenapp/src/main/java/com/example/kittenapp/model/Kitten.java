@@ -3,11 +3,13 @@ package com.example.kittenapp.model;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.example.kittenapp.R;
 import com.example.kittenapp.activity.MainActivity;
 
 import java.io.Serializable;
+import java.util.Random;
 
 public class Kitten implements Serializable {
     private static final String[] names = {"Оливер", "Джаспер", "Смоки", "Гизмо", "Чарли", "Джек", "Макс", "Роки", "Оскар",
@@ -43,9 +45,9 @@ public class Kitten implements Serializable {
     }
 
     private String generatePhone() {
-        int num = (int) (1000000 + Math.random() * 9999999);
-        String number = Integer.toString(num);
-        return "097" + number;
+        Random random = new Random();
+        String input = String.format("%09d", random.nextInt(1000000000));
+        return input.replaceFirst("(\\d{2})(\\d{3})(\\d{2})(\\d+)", "+38 (0$1) $2-$3-$4");
     }
 
     public String getName() {

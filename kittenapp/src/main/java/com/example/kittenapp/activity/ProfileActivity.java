@@ -21,7 +21,9 @@ import android.widget.TextView;
 import com.example.kittenapp.R;
 import com.example.kittenapp.model.Kitten;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Request;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -42,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         profileImage = findViewById(R.id.profileImageView);
         phoneButtonImage = findViewById(R.id.phoneImageButton);
+
         phoneText = findViewById(R.id.profilePhoneText);
         numberText = findViewById(R.id.profileNumberTextView);
         nameText = findViewById(R.id.profileNameTextView);
@@ -58,32 +61,30 @@ public class ProfileActivity extends AppCompatActivity {
             nameText.setText(kittenUser.getName());
         }
 
-        phoneButtonImage.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener callListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 callRequest();
             }
-        });
+        };
+        phoneButtonImage.setOnClickListener(callListener);
+        phoneText.setOnClickListener(callListener);
     }
 
     private void callRequest() {
         if (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
-            Log.d("MyLogs", "Try permission request");
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(ProfileActivity.this,
                     Manifest.permission.CALL_PHONE)) {
-                Log.d("MyLogs", "Permission window request");
                 ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
 
             } else {
-                Log.d("MyLogs", "Permission requested");
                 ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
             }
 
         } else {
-            Log.d("MyLogs", "Permission granted");
             callPhone();
         }
     }
@@ -97,8 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
                     callPhone();
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    if(!shouldShowRequestPermissionRationale(permissions[0])){
-                        Log.d("MyLogs", "User checked Never show again");
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
                         intent.setData(uri);
@@ -111,7 +111,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void callPhone() {
         Uri uri = Uri.parse("tel:" + kittenUser.getPhone());
-        Log.d("MyLogs", "Calling");
         Intent phoneIntent = new Intent(Intent.ACTION_CALL, uri);
         startActivity(phoneIntent);
     }

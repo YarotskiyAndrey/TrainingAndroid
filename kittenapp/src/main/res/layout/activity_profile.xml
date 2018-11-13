@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:textSize="18sp"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="@+id/profileImageView"
         app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
 
@@ -51,7 +52,6 @@
 
     <TextView
         android:id="@+id/profileNumberTextView"
-        android:text="@string/kitten_num_template"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -59,23 +59,24 @@
         android:layout_marginTop="71dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        app:fontFamily="@font/roboto_black"
+        android:text="@string/kitten_num_template"
         android:textSize="18sp"
+        app:fontFamily="@font/roboto_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/profilePhoneText" />
 
     <TextView
         android:id="@+id/profileNameTextView"
-        android:text="@string/kitten_name_template"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        app:fontFamily="@font/roboto_italic"
+        android:text="@string/kitten_name_template"
         android:textSize="18sp"
+        app:fontFamily="@font/roboto_italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileNumberTextView" />
